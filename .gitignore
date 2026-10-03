@@ -4,3 +4,9 @@ out
 next-env.d.ts
 *.tsbuildinfo
 .env*.local
+
+# Private business material – never commit (see .private-commercial/README.md)
+.private-commercial/
+.env
+.env.*
+!.env.example

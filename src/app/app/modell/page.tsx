@@ -6,6 +6,9 @@ import { Card, PageHeader } from "@/components/ui";
 import { LINE_COLORS, PRESETS, clone } from "@/lib/sim/presets";
 import { useModel } from "@/lib/store/useModel";
 import type { Model, ModelNode, NodeKind } from "@/lib/sim/types";
+import { validateModel } from "@/lib/sim/validate";
+import { distMean } from "@/lib/sim/random";
+import { shareUrl } from "@/lib/share";
 
 const KIND_LABEL: Record<NodeKind, string> = {
   source: "Källa",
@@ -25,6 +28,8 @@ function validate(m: Model): string[] {
     if (n.kind !== "source" && ins === 0) issues.push(`${n.name} saknar inflöde.`);
     if (n.kind !== "sink" && outs === 0) issues.push(`${n.name} saknar utflöde – detaljer fastnar.`);
     if (n.kind === "assembly" && ins < 2) issues.push(`${n.name} (montering) bör ha minst två inflöden.`);
+    if ((n.kind === "station" || n.kind === "assembly") && distMean(n.processTime) < 1)
+      issues.push(`${n.name} har cykeltid under 1 s – orimligt snabbt; simuleringen kan avbrytas i förtid.`);
   }
   if (!m.nodes.some((n) => n.kind === "source")) issues.push("Modellen saknar källa.");
   if (!m.nodes.some((n) => n.kind === "sink")) issues.push("Modellen saknar utlopp.");
@@ -82,6 +87,18 @@ export default function ModelPage() {
     setModel({ ...model, lines: [...model.lines, { id: uid("L"), name: `Linje ${i + 1}`, color: LINE_COLORS[i % LINE_COLORS.length] }] });
   };
 
+  const [shared, setShared] = useState<string | null>(null);
+  const share = async () => {
+    try {
+      const url = await shareUrl(model);
+      await navigator.clipboard.writeText(url);
+      setShared("✓ Länk kopierad");
+    } catch {
+      setShared("Kunde inte kopiera");
+    }
+    setTimeout(() => setShared(null), 2500);
+  };
+
   const exportJson = () => {
     const blob = new Blob([JSON.stringify(model, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
@@ -91,11 +108,10 @@ export default function ModelPage() {
   };
   const importJson = async (f: File) => {
     try {
-      const m = JSON.parse(await f.text()) as Model;
-      if (!Array.isArray(m.nodes) || !Array.isArray(m.edges)) throw new Error("Ogiltig fil");
-      setModel({ name: m.name ?? "Importerad modell", lines: m.lines ?? [], nodes: m.nodes, edges: m.edges });
+      setModel(validateModel(JSON.parse(await f.text())));
+      setSelected(null);
     } catch (e) {
-      alert(`Kunde inte läsa modellen: ${e}`);
+      alert(`Kunde inte läsa modellen: ${e instanceof Error ? e.message : e}`);
     }
   };
 
@@ -116,6 +132,7 @@ export default function ModelPage() {
                 </option>
               ))}
             </select>
+            <button className="btn" onClick={share}>{shared ?? "🔗 Dela länk"}</button>
             <button className="btn" onClick={exportJson}>⇩ Exportera</button>
             <button className="btn" onClick={() => fileRef.current?.click()}>⇧ Importera</button>
             <input ref={fileRef} type="file" accept="application/json" hidden onChange={(e) => e.target.files?.[0] && importJson(e.target.files[0])} />

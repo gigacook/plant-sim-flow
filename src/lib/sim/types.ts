@@ -156,4 +156,6 @@ export interface RunResult {
   series: SeriesPoint[];
   leadTimeHistogram: { from: number; to: number; count: number }[];
   events: number;
+  /** Sant om körningen avbröts av händelsebudgeten (modellen är orimligt snabb). */
+  truncated: boolean;
 }

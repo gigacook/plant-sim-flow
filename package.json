@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --no-warnings scripts/smoke-test.ts"
+    "test": "node --experimental-strip-types --no-warnings scripts/smoke-test.ts",
+    "test:billing": "node --experimental-strip-types --no-warnings --test src/lib/billing/entitlements.test.ts src/lib/billing/mock.test.ts",
+    "mock:cloudflare": "node --experimental-strip-types --no-warnings scripts/mock-cloudflare.ts"
   },
   "dependencies": {
     "next": "^15.5.27",

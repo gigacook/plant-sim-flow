@@ -23,10 +23,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - run: npm run test:billing
       - run: npx next build
         env:
           # Följer repots namn, så sidan fungerar även efter namnbyte
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+      - run: npm run mock:cloudflare
       - run: touch out/.nojekyll
       - name: Publicera till gh-pages
         run: |

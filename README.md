@@ -1,6 +1,8 @@
-# PlantFlow – Factory Flow Simulation
+# Taktlab – Factory Flow Simulation for Teaching
 
-PlantFlow is a web app for simulating, analysing and optimising material flow through a factory with one or more production lines. It is inspired by Siemens Plant Simulation, but much simpler, and it runs entirely in the browser.
+_Working name; previously “PlantFlow”. The product name is set in `src/lib/brand.ts`._
+
+Taktlab is a web app for simulating, analysing and optimising material flow through a factory with one or more production lines. It runs entirely in the browser and is aimed at teaching flow concepts. It is an independent project and is not affiliated with Siemens (Plant Simulation) or any other simulation vendor.
 
 You build a model of the factory (sources, buffers, stations, assembly stations, sinks) and run a discrete-event simulation. The app then shows dashboards with KPIs, bottleneck analysis, scenario comparisons and automatic optimisation. The UI is in Swedish and uses a dark theme.
 
@@ -13,9 +15,31 @@ You build a model of the factory (sources, buffers, stations, assembly stations,
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm test           # smoke test of the simulation engine in Node
+npm test           # engine smoke test + validation against queueing theory
 npm run build      # static export to ./out
 ```
+
+## Site structure and configuration
+
+| Route | Purpose |
+|---|---|
+| `/` | Product page with a live demo of exercise 1 |
+| `/ovningar/` | Free exercises; each opens `/app/?ovning=<id>` |
+| `/larare/` | Teacher kit offer (checkout link or “register interest”) |
+| `/tack/` | Checkout return page. It grants nothing; delivery comes from the payment provider. |
+| `/integritet/`, `/villkor/` | Privacy notice and terms. **Drafts** (noindex) until `NEXT_PUBLIC_POLICIES_APPROVED=true`. |
+| `/app/…` | The simulator (dashboard, live, model, analysis, optimisation) |
+
+Models can be shared with `/app/#m=<compressed model>` (the “Dela länk” button in the model editor). The model stays in the URL fragment, which is never sent to the server.
+
+**Billing runs in mock mode** (`NEXT_PUBLIC_BILLING_MODE=mock`, the default): `/kassa/` is a simulated hosted checkout with test cards, and webhooks are signed and verified in the browser. Access is decided by an idempotent entitlement store. Receipts and e-mails go to a demo inbox at `/demo/`. **No money moves and no e-mail is sent.** `cloudflare/` holds the server-side webhook function for later, mock-tested locally with `npm run mock:cloudflare`.
+
+```bash
+npm run test:billing     # entitlement, signature and mock-lifecycle tests
+npm run mock:cloudflare  # Pages Functions against an in-memory KV + deploy-readiness check (after build)
+```
+
+Public build-time settings are listed in `.env.example`. They are all `NEXT_PUBLIC_*`; never put secrets there. Without a contact email or checkout URL, the site shows honest placeholders instead of broken buttons.
 
 ## Tech stack
 

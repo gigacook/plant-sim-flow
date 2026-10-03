@@ -1,0 +1,10 @@
+# MOCK / EXAMPLE – no account is connected. Copy to wrangler.toml when you create a Cloudflare Pages project.
+name = "taktlab"
+pages_build_output_dir = "../out"
+compatibility_date = "2026-10-01"
+
+# [[kv_namespaces]]
+# binding = "ENTITLEMENTS"
+# id = "<create with: wrangler kv namespace create ENTITLEMENTS>"
+
+# Secrets are NOT set here. Use: wrangler pages secret put WEBHOOK_SECRET

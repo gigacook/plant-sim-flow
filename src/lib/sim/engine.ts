@@ -160,6 +160,11 @@ export interface Snapshot {
 
 const isStation = (k: ModelNode["kind"]) => k === "station" || k === "assembly";
 
+/** Kortaste tillåtna bearbetningstid (s). Förhindrar oändliga loopar vid cykeltid 0 och obegränsad tillgång. */
+export const MIN_PROCESS_TIME = 0.01;
+/** Max antal händelser per körning – skydd mot modeller som annars skulle låsa webbläsaren. */
+export const MAX_EVENTS = 3_000_000;
+
 export class Simulation {
   readonly model: Model;
   readonly cfg: RunConfig;
@@ -185,6 +190,7 @@ export class Simulation {
   private bnCurrent: RT | null = null;
   private events = 0;
   private finished = false;
+  private truncated = false;
   /** Logg över förflyttningar (för animering). Töms av konsumenten. */
   moves: MoveEvent[] = [];
   trackMoves = false;
@@ -360,7 +366,7 @@ export class Simulation {
     s.state = "busy";
     s.part = part;
     s.token++;
-    const d = this.rng.sample(rt.node.processTime);
+    const d = Math.max(MIN_PROCESS_TIME, this.rng.sample(rt.node.processTime));
     s.until = this.t + d;
     this.schedule(s.until, "complete", rt.idx, rt.servers.indexOf(s), s.token);
   }
@@ -669,6 +675,10 @@ export class Simulation {
       this.accrueBottleneck();
       this.handle(e);
       this.events++;
+      if (this.events >= MAX_EVENTS) {
+        this.finished = true;
+        this.truncated = true;
+      }
       this.updateActivity();
     }
     if (!this.finished) {
@@ -825,6 +835,7 @@ export class Simulation {
       series: this.series,
       leadTimeHistogram: hist,
       events: this.events,
+      truncated: this.truncated,
     };
   }
 }

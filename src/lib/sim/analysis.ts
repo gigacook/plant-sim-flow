@@ -156,6 +156,7 @@ export function averageRuns(runs: RunResult[]): RunResult {
     sources: first.sources.map((_, i) => avgObj(runs.map((r) => r.sources), i)),
     sinks: first.sinks.map((_, i) => avgObj(runs.map((r) => r.sinks), i)),
     edgeFlow,
+    truncated: runs.some((r) => r.truncated),
   };
 }
 

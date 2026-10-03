@@ -69,6 +69,11 @@ export default function Dashboard() {
       </Card>
 
       {error && <div className="card mb-4 border-[#d03b3b] p-3 text-[13px] text-[#f0a3a3]">Fel: {error}</div>}
+      {avg?.truncated && (
+        <div role="alert" className="card mb-4 border-[#fab219] p-3 text-[13px] text-[#fde3a7]">
+          ⚠ Simuleringen avbröts i förtid eftersom modellen genererar orimligt många händelser (t.ex. cykeltid nära 0 med obegränsad tillgång). Resultaten gäller bara den simulerade delen – kontrollera cykeltiderna under Modell & layout.
+        </div>
+      )}
 
       {!avg ? (
         <div className="card p-10 text-center text-[var(--muted)]">{running ? "Simulerar…" : "Ingen körning ännu"}</div>

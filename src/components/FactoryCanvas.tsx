@@ -26,6 +26,8 @@ interface Props {
   onNodeClick?: (id: string) => void;
   onEdgeClick?: (id: string) => void;
   height?: number;
+  /** Size height from the layout's aspect ratio instead of a fixed height. */
+  autoHeight?: boolean;
 }
 
 const SIZE: Record<ModelNode["kind"], { w: number; h: number }> = {
@@ -69,6 +71,7 @@ export default function FactoryCanvas({
   onNodeClick,
   onEdgeClick,
   height = 460,
+  autoHeight = false,
 }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [drag, setDrag] = useState<{ id: string; dx: number; dy: number } | null>(null);
@@ -85,8 +88,8 @@ export default function FactoryCanvas({
     const y0 = Math.min(...ys) - 90;
     const x1 = Math.max(...xs) + 90;
     const y1 = Math.max(...ys) + 90;
-    return { x: x0, y: y0, w: Math.max(600, x1 - x0), h: Math.max(300, y1 - y0) };
-  }, [model.nodes]);
+    return { x: x0, y: y0, w: Math.max(600, x1 - x0), h: Math.max(autoHeight ? 200 : 300, y1 - y0) };
+  }, [model.nodes, autoHeight]);
 
   const lanes = useMemo(
     () =>
@@ -137,7 +140,7 @@ export default function FactoryCanvas({
       ref={svgRef}
       viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
       className="w-full select-none rounded-xl bg-[var(--canvas)]"
-      style={{ height, touchAction: editable ? "none" : "auto" }}
+      style={autoHeight ? { aspectRatio: `${vb.w} / ${vb.h}`, height: "auto" } : { height, touchAction: editable ? "none" : "auto" }}
       onPointerMove={(ev) => {
         if (!drag || !onMoveNode) return;
         const p = toSvg(ev);

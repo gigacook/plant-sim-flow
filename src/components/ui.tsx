@@ -4,7 +4,7 @@ import { STATE_COLORS, STATE_LABELS } from "@/lib/colors";
 
 export function Card({ title, subtitle, actions, children, className = "" }: { title?: ReactNode; subtitle?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={`card p-4 ${className}`}>
+    <section className={`card min-w-0 p-4 ${className}`}>
       {(title || actions) && (
         <header className="mb-3 flex flex-wrap items-start justify-between gap-2">
           <div>

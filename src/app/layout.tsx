@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Shell from "@/components/Shell";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "PlantFlow – fabrikssimulering",
-  description: "Simulera, analysera och optimera materialflöden genom fabrikslinjer.",
+  title: { default: `${BRAND.name} – ${BRAND.tagline}`, template: `%s · ${BRAND.name}` },
+  description: "Visa flaskhalsar, buffertar och köer i produktionsflöden – en gratis simulator i webbläsaren med färdiga övningar för undervisning.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="sv">
-      <body>
-        <Shell>{children}</Shell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
