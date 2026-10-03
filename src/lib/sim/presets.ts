@@ -123,10 +123,15 @@ const assembly: Model = {
   ],
 };
 
+// Glesa ut layouten så att pilar och flödesetiketter får plats mellan noderna.
+function spread(m: Model, f = 1.4): Model {
+  return { ...m, nodes: m.nodes.map((n) => ({ ...n, x: Math.round(60 + (n.x - 60) * f) })) };
+}
+
 export const PRESETS: { id: string; label: string; description: string; model: Model }[] = [
-  { id: "single", label: "Enkel linje", description: "Tre maskiner i serie med transportörer och stopp.", model: singleLine },
-  { id: "two", label: "Två linjer + packning", description: "Två parallella linjer som går ihop i en gemensam packstation.", model: twoLines },
-  { id: "assembly", label: "Montering", description: "Två förmonteringslinjer som gifts ihop i en monteringsstation.", model: assembly },
+  { id: "single", label: "Enkel linje", description: "Tre maskiner i serie med transportörer och stopp.", model: spread(singleLine, 1.2) },
+  { id: "two", label: "Två linjer + packning", description: "Två parallella linjer som går ihop i en gemensam packstation.", model: spread(twoLines) },
+  { id: "assembly", label: "Montering", description: "Två förmonteringslinjer som gifts ihop i en monteringsstation.", model: spread(assembly) },
 ];
 
 export function clone<T>(x: T): T {

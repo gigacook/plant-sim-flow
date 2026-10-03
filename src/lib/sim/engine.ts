@@ -637,6 +637,10 @@ export class Simulation {
         rt.waitN = 0;
       }
       if (rt.node.kind === "source") rt.blockedTime = 0;
+      if (rt.node.kind === "sink") {
+        rt.count = 0;
+        rt.leadSum = 0;
+      }
     }
   }
 

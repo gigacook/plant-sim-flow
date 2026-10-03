@@ -14,6 +14,8 @@ for (const p of PRESETS) {
     const sum = s.working + s.waiting + s.blocked + s.failed;
     if (Math.abs(sum - 1) > 1e-6) { console.error("tillståndsandelar summerar ej till 1", s); failed = true; }
   }
+  const sinkSum = r.sinks.reduce((a, s) => a + s.count, 0);
+  if (sinkSum !== r.totalOutput) { console.error("utloppsräkning != totalOutput", sinkSum, r.totalOutput); failed = true; }
   if (r.totalOutput <= 0) { console.error("ingen produktion", p.id); failed = true; }
   const rep = replicate(p.model, DEFAULT_RUN, 5);
   console.log(`   5 repl: tp=${rep.throughput.mean.toFixed(1)} ± ${rep.throughput.ci.toFixed(1)}`);

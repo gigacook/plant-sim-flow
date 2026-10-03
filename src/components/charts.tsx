@@ -38,7 +38,7 @@ export function StateChart({ result }: { result: RunResult }) {
     <ResponsiveContainer width="100%" height={Math.max(160, data.length * 34 + 40)}>
       <BarChart data={data} layout="vertical" margin={{ left: 8, right: 16, top: 4, bottom: 4 }} barCategoryGap={6}>
         <CartesianGrid horizontal={false} stroke={CHART.grid} />
-        <XAxis type="number" domain={[0, 100]} unit=" %" {...axisProps} />
+        <XAxis type="number" domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} unit=" %" {...axisProps} />
         <YAxis type="category" dataKey="name" width={130} {...axisProps} />
         <Tooltip {...tooltipStyle} formatter={(v: number, k: string) => [`${n1(v)} %`, STATE_LABELS[k as keyof typeof STATE_LABELS]]} />
         {keys.map((k, i) => (

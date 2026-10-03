@@ -108,6 +108,7 @@ table.data td {
 table.data td.num,
 table.data th.num {
   text-align: right;
+  white-space: nowrap;
 }
 
 @keyframes bnpulse {
