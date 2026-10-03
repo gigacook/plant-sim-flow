@@ -2,7 +2,7 @@ name: Deploy till GitHub Pages
 
 on:
   push:
-    branches: [source]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -25,15 +25,15 @@ jobs:
       - run: npm test
       - run: npx next build
         env:
-          # Användarsajt (namn.github.io) ligger i roten, andra repon under /reponamn
-          NEXT_PUBLIC_BASE_PATH: ${{ endsWith(github.event.repository.name, '.github.io') && '' || format('/{0}', github.event.repository.name) }}
+          # Följer repots namn, så sidan fungerar även efter namnbyte
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
       - run: touch out/.nojekyll
-      - name: Publicera färdig sajt till main
+      - name: Publicera till gh-pages
         run: |
           cd out
-          git init -q -b main
+          git init -q -b gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -qm "Deploy ${GITHUB_SHA} från source"
-          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" main
+          git commit -qm "Deploy ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
