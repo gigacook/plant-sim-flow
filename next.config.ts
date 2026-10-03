@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
   basePath,
+  assetPrefix: process.env.ASSET_PREFIX || undefined,
   images: { unoptimized: true },
   reactStrictMode: true,
 };
