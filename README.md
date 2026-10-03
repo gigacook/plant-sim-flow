@@ -30,4 +30,6 @@ npm test           # röktest av simuleringsmotorn i Node
 npm run build      # statisk export till ./out
 ```
 
-Deploy sker automatiskt till GitHub Pages via `.github/workflows/deploy.yml`.
+Deploy: varje push till `main` bygger sidan och publicerar den på branchen `gh-pages`
+(`.github/workflows/deploy.yml`). Aktivera en gång under Settings → Pages → Deploy from a branch → `gh-pages` / `(root)`.
+Live: https://gigacook.github.io/3d-geo-encoder-/
