@@ -1,12 +1,12 @@
 # Taktlab – Factory Flow Simulation for Teaching
 
-_Working name; previously “PlantFlow”. The product name is set in `src/lib/brand.ts`._
+_Working name. The product name is set in `src/lib/brand.ts`._
 
 Taktlab is a web app for simulating, analysing and optimising material flow through a factory with one or more production lines. It runs entirely in the browser and is aimed at teaching flow concepts. It is an independent project and is not affiliated with Siemens (Plant Simulation) or any other simulation vendor.
 
 You build a model of the factory (sources, buffers, stations, assembly stations, sinks) and run a discrete-event simulation. The app then shows dashboards with KPIs, bottleneck analysis, scenario comparisons and automatic optimisation. The UI is in Swedish and uses a dark theme.
 
-- **Live:** https://gigacook.github.io/plant-sim-flow/
+- **Live:** https://gigacook.github.io/taktlab/
 - **Source code:** `main`
 - **Deploy:** GitHub Actions builds on every push to `main` and publishes the static site to the `gh-pages` branch, which GitHub Pages serves.
 
